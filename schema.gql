@@ -1,0 +1,56 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""user"""
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  active: Boolean!
+}
+
+"""user_with_token"""
+type UserWithToken {
+  id: ID!
+  name: String!
+  email: String!
+  active: Boolean!
+  token: String!
+}
+
+"""post """
+type Post {
+  id: Float!
+  title: String!
+  content: String!
+  user: User!
+}
+
+type Query {
+  verify_token: User!
+  posts: [Post!]!
+  post(id: Float!): Post!
+}
+
+type Mutation {
+  login(data: LoginData!): UserWithToken!
+  signup(data: SignupData!): UserWithToken!
+  create_post(data: CreatePostData!): Post!
+}
+
+input LoginData {
+  email: String!
+  password: String!
+}
+
+input SignupData {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input CreatePostData {
+  title: String!
+  content: String!
+}
