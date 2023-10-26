@@ -1673,10 +1673,10 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
-"@types/sequelize@^4.28.16":
-  version "4.28.16"
-  resolved "https://registry.yarnpkg.com/@types/sequelize/-/sequelize-4.28.16.tgz#fb5b0859e3f4f62f7d4bbd8cdbed50692e9ad85a"
-  integrity sha512-LGJqCeLc+r8kEqlF1jC8SAtxx2YnFTLIjnYP3C5y5zOlxUYkAH7Oe84MWg+JPOmrYe30WB4455zONWXTCpQJRw==
+"@types/sequelize@^4.28.17":
+  version "4.28.17"
+  resolved "https://registry.yarnpkg.com/@types/sequelize/-/sequelize-4.28.17.tgz#65e2b0a8c9e830c724f36d58cfa3caf60fef8ac9"
+  integrity sha512-n3ZChokiKFIK85oThbQiSOeQOpRMle7BkUJqxBQLC6EJ0B6S4+LQN5XEqDFwwXsUkISftu6PaYOWXoL7tu+E5A==
   dependencies:
     "@types/bluebird" "*"
     "@types/continuation-local-storage" "*"
@@ -1712,15 +1712,10 @@
   dependencies:
     "@types/superagent" "*"
 
-"@types/validator@*", "@types/validator@^13.7.17":
+"@types/validator@*", "@types/validator@^13.7.10", "@types/validator@^13.7.17":
   version "13.11.2"
   resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.11.2.tgz#a2502325a3c0bd29f36dbac3b763223edd801e17"
   integrity sha512-nIKVVQKT6kGKysnNt+xLobr+pFJNssJRi2s034wgWeFBUx01fI8BeHTW2TcRp7VcFu9QCYG8IlChTuovcm0oKQ==
-
-"@types/validator@^13.7.10":
-  version "13.7.17"
-  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.7.17.tgz#0a6d1510395065171e3378a4afc587a3aefa7cc1"
-  integrity sha512-aqayTNmeWrZcvnG2MG9eGYI6b7S5fl+yKgPs6bAjOTwPS316R5SxBGKvtSExfyoJU7pIeHJfsHI0Ji41RVMkvQ==
 
 "@types/yargs-parser@*":
   version "21.0.0"
