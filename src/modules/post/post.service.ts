@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 
 import { Post, User } from '@/models'
-import { type CreatePostData } from '@/modules/post/dtos'
+import { type CreatePostDto } from '@/modules/post/dtos'
 
 @Injectable()
 export class PostService {
@@ -11,7 +11,7 @@ export class PostService {
     private readonly postModel: typeof Post
   ) {}
 
-  async createPost(data: CreatePostData, user_id: number) {
+  async createPost(data: CreatePostDto, user_id: number) {
     const post = await this.postModel.create({
       ...data,
       user_id

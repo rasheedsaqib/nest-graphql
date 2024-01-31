@@ -10,7 +10,7 @@ import { InjectModel } from '@nestjs/sequelize'
 import { hash, verify } from 'argon2'
 
 import { User } from '@/models'
-import { type LoginData, type SignupData } from '@/modules/auth/dtos'
+import { type LoginDto, type SignupDto } from '@/modules/auth/dtos'
 
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
     private readonly userModel: typeof User
   ) {}
 
-  async signup(data: SignupData) {
+  async signup(data: SignupDto) {
     const prevUser = await this.userModel.findOne({
       where: {
         email: data.email
@@ -55,7 +55,7 @@ export class AuthService {
     }
   }
 
-  async login(data: LoginData) {
+  async login(data: LoginDto) {
     const user = await this.userModel.findOne({
       where: {
         email: data.email

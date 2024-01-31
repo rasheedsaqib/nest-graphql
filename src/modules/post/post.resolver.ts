@@ -2,9 +2,9 @@ import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 import { GetUser } from '@/decorators'
-import { Post, User } from '@/entities'
 import { TokenJwtGuard } from '@/guards'
-import { CreatePostData } from '@/modules/post/dtos'
+import { Post, User } from '@/models'
+import { CreatePostDto } from '@/modules/post/dtos'
 import { PostService } from '@/modules/post/post.service'
 
 @Resolver()
@@ -13,7 +13,7 @@ export class PostResolver {
 
   @Mutation(() => Post, { name: 'create_post' })
   @UseGuards(TokenJwtGuard)
-  async createPost(@Args('data') data: CreatePostData, @GetUser() user: User) {
+  async createPost(@Args('data') data: CreatePostDto, @GetUser() user: User) {
     return await this.post.createPost(data, user.id)
   }
 

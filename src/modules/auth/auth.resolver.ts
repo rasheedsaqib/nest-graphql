@@ -2,22 +2,22 @@ import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 import { GetUser } from '@/decorators'
-import { User, UserWithToken } from '@/entities'
 import { TokenJwtGuard } from '@/guards'
+import { User, UserWithToken } from '@/models'
 import { AuthService } from '@/modules/auth/auth.service'
-import { LoginData, SignupData } from '@/modules/auth/dtos'
+import { LoginDto, SignupDto } from '@/modules/auth/dtos'
 
 @Resolver('Auth')
 export class AuthResolver {
   constructor(private readonly auth: AuthService) {}
 
   @Mutation(() => UserWithToken, { name: 'login' })
-  async login(@Args('data') data: LoginData) {
+  async login(@Args('data') data: LoginDto) {
     return this.auth.login(data)
   }
 
   @Mutation(() => UserWithToken, { name: 'signup' })
-  async signup(@Args('data') data: SignupData) {
+  async signup(@Args('data') data: SignupDto) {
     return this.auth.signup(data)
   }
 
