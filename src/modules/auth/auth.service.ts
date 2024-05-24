@@ -1,13 +1,10 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common'
+import { UserInputError } from '@nestjs/apollo'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { InjectModel } from '@nestjs/sequelize'
 import { hash, verify } from 'argon2'
+import { type Transaction } from 'sequelize'
 
 import { User } from '@/models'
 import { type LoginDto, type SignupDto } from '@/modules/auth/dtos'
@@ -21,81 +18,56 @@ export class AuthService {
     private readonly userModel: typeof User
   ) {}
 
-  async signup(data: SignupDto) {
-    const prevUser = await this.userModel.findOne({
+  async getUserWithEmail(
+    { email }: { email: string },
+    transaction: Transaction
+  ): Promise<User | null> {
+    const user = await this.userModel.findOne({
       where: {
-        email: data.email
-      }
+        email
+      },
+      transaction
     })
 
-    if (prevUser != null) {
-      throw new BadRequestException({
-        status: 'Error',
-        message: 'User already exists with this email'
-      })
-    }
+    return user?.toJSON() ?? null
+  }
 
-    const user = await this.userModel.create({
-      ...data,
-      password: await hash(data.password),
-      active: true
-    })
-
-    const token = await this.jwt.signAsync(
-      { id: user.id, email: user.email },
+  async createUser({ data }: { data: SignupDto }, transaction: Transaction) {
+    const user = await this.userModel.create(
       {
-        secret: this.config.getOrThrow('JWT_SECRET'),
-        expiresIn: '8h'
+        ...data,
+        password: await hash(data.password),
+        active: true
+      },
+      {
+        transaction
       }
     )
 
-    return {
-      ...user.dataValues,
-      token
-    }
+    return user.toJSON()
   }
 
-  async login(data: LoginDto) {
-    const user = await this.userModel.findOne({
-      where: {
-        email: data.email
-      }
-    })
-
-    if (user == null) {
-      throw new NotFoundException({
-        status: 'Error',
-        message: 'No user found with this email'
-      })
-    }
-
-    if (!user.active) {
-      throw new ForbiddenException({
-        status: 'Error',
-        message: 'User is not active'
-      })
-    }
-
+  async login({ data, user }: { data: LoginDto; user: User }) {
     const valid = await verify(user.password, data.password)
 
     if (!valid) {
-      throw new ForbiddenException({
-        status: 'Error',
-        message: 'Incorrect password'
-      })
+      throw new UserInputError('Incorrect password')
     }
 
-    const token = await this.jwt.signAsync(
+    if (!user.active) {
+      throw new UserInputError('User is not active')
+    }
+
+    return user
+  }
+
+  async signToken(user: User) {
+    return await this.jwt.signAsync(
       { id: user.id, email: user.email },
       {
         secret: this.config.getOrThrow('JWT_SECRET'),
-        expiresIn: '8h'
+        expiresIn: '24h'
       }
     )
-
-    return {
-      ...user.dataValues,
-      token
-    }
   }
 }

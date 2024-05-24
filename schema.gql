@@ -2,7 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-"""user"""
+"""Post """
+type Post {
+  id: Float!
+  title: String!
+  content: String!
+  user: User!
+}
+
+"""User"""
 type User {
   id: Float!
   name: String!
@@ -10,7 +18,7 @@ type User {
   active: Boolean!
 }
 
-"""user_with_token"""
+"""UserWithToken"""
 type UserWithToken {
   id: Float!
   name: String!
@@ -19,38 +27,30 @@ type UserWithToken {
   token: String!
 }
 
-"""post """
-type Post {
-  id: Float!
-  title: String!
-  content: String!
-  user: User!
-}
-
 type Query {
   verify_token: User!
   posts: [Post!]!
-  post(id: Float!): Post!
+  post(id: Int!): Post!
 }
 
 type Mutation {
-  login(data: LoginData!): UserWithToken!
-  signup(data: SignupData!): UserWithToken!
-  create_post(data: CreatePostData!): Post!
+  login(data: LoginInput!): UserWithToken!
+  signup(data: SignupInput!): UserWithToken!
+  create_post(data: CreatePostInput!): Post!
 }
 
-input LoginData {
+input LoginInput {
   email: String!
   password: String!
 }
 
-input SignupData {
+input SignupInput {
   name: String!
   email: String!
   password: String!
 }
 
-input CreatePostData {
+input CreatePostInput {
   title: String!
   content: String!
 }

@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { UserInputError } from '@nestjs/apollo'
+import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
+import type { Transaction } from 'sequelize'
 
 import { Post, User } from '@/models'
 import { type CreatePostDto } from '@/modules/post/dtos'
@@ -11,45 +13,50 @@ export class PostService {
     private readonly postModel: typeof Post
   ) {}
 
-  async createPost(data: CreatePostDto, user_id: number) {
-    const post = await this.postModel.create({
-      ...data,
-      user_id
-    })
-
-    return await this.postModel.findOne({
-      where: {
-        id: post.id
+  async createPost(
+    { data, user_id }: { data: CreatePostDto; user_id: number },
+    transaction: Transaction
+  ) {
+    const post = await this.postModel.create(
+      {
+        ...data,
+        user_id
       },
-      include: [{ model: User, as: 'user' }]
-    })
+      { transaction }
+    )
+
+    return await this.findOne({ post_id: post.id, user_id }, transaction)
   }
 
-  async getPosts(user_id: number) {
-    return await this.postModel.findAll({
+  async findAll({ user_id }: { user_id: number }, transaction: Transaction) {
+    const posts = await this.postModel.findAll({
       where: {
         user_id
       },
-      include: [{ model: User, as: 'user' }]
+      include: [{ model: User, as: 'user' }],
+      transaction
     })
+
+    return posts.map(post => post.toJSON())
   }
 
-  async getPost(id: number, user_id: number) {
+  async findOne(
+    { post_id, user_id }: { post_id: number; user_id: number },
+    transaction: Transaction
+  ) {
     const post = await this.postModel.findOne({
       where: {
-        id,
+        id: post_id,
         user_id
       },
-      include: [{ model: User, as: 'user' }]
+      include: [{ model: User, as: 'user' }],
+      transaction
     })
 
     if (post == null) {
-      throw new NotFoundException({
-        status: 'Error',
-        message: 'Post not found'
-      })
+      throw new UserInputError('Post not found')
     }
 
-    return post
+    return post.toJSON()
   }
 }
